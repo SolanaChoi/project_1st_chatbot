@@ -22,12 +22,12 @@ def pdf_to_doc(pdf_path: str) -> List[Document]:
 
 
 # PDF 문서 로드
-pdf_path = "/Users/apple/Desktop/Programming/chatbot/2024subscription_FAQ.pdf"
+pdf_path = "/Users/apple/Desktop/Programming/chatbot/2024-subscription-FAQ.pdf"
 documents = pdf_to_doc(pdf_path)
 
 # 텍스트 분할
-text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, 
-    chunk_overlap=50)
+text_splitter = RecursiveCharacterTextSplitter(chunk_size=800, 
+    chunk_overlap=100)
 doc_list = text_splitter.split_documents(documents)
 print(f"분할된 청크 수: {len(doc_list)}")
 
@@ -50,7 +50,7 @@ for i in range(0, len(doc_list), batch_size):
         vectorstore = PineconeVectorStore.from_documents(
             documents=batch,
             embedding=embeddings,
-            index_name='chat'
+            index_name='pdf'
         )
     else:
         # 나머지 배치들 추가
