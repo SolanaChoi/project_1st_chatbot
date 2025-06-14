@@ -2,11 +2,13 @@ import os
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain.chains import (create_history_aware_retriever, create_retrieval_chain)
 from langchain.chains.combine_documents import create_stuff_documents_chain
-from langchain.prompts import (PromptTemplate, ChatPromptTemplate, MessagesPlaceholder)
+from langchain.prompts import (PromptTemplate, ChatPromptTemplate, 
+                               MessagesPlaceholder, FewShotPromptTemplate)
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.chat_history import BaseChatMessageHistory, InMemoryChatMessageHistory
 from langchain_core.runnables import RunnableWithMessageHistory
 from langchain_pinecone import PineconeVectorStore
+from fewshot import qa_examples
 from dotenv import load_dotenv
 
 # 환경변수 로드
@@ -23,7 +25,7 @@ def load_vectorstore():
     PINECONE_API_KEY = os.getenv('PINECONE_API_KEY')
 
     vectorstore = PineconeVectorStore.from_existing_index(
-        index_name="chat",
+        index_name="pdf",
         embedding=OpenAIEmbeddings(model='text-embedding-3-large')
     )
     return vectorstore
@@ -48,14 +50,33 @@ def build_history_retriever(llm, retriever):
     )
     return history_retriever
 
+# 퓨샷 프롬프트 생성================================================
+def build_few_shot_examples() -> str:
+    example_prompt = PromptTemplate.from_template("질문: {input}\n답변: {answer}")
+
+    few_shot_prompt = FewShotPromptTemplate(
+        examples=qa_examples,  
+        example_prompt=example_prompt, 
+        prefix='다음 질문에 답변하세요::', 
+        suffix="질문하세요: {input}",  
+        input_variables=["input"],
+    )
+
+    formatted_few_shot_prompt = few_shot_prompt.format(input='{input}')   
+
+    return formatted_few_shot_prompt
+
 # 질문 프롬프트 생성================================================
 def build_qa_prompt():
+    formatted_fs_prompt = build_few_shot_examples()
+
     qa_prompt = ChatPromptTemplate.from_messages([
-        ('system','''당신은 청약 관련 전문가입니다. [context]를 참고하여 사용자의 질문에 답변하세요. [context]: {context}
+        ('system','''당신은 청약 관련 전문가입니다. 다음 문서를 참고하여 사용자의 질문에 답변하세요. 문서: {context}
         - 주어진 문서를 바탕으로 사용자의 청약 관련 질문에 정확하고 '자세하게' 답변해주세요.
-        - 문서에 없는 정보는 "청약 관련 질문만 답변할 수 있습니다"라고 답하세요.
+        - 사용자의 질문 형태와 문법에는 관계 없이, 질문의 '내용'이 청약과 관계가 없을 경우엔 "청약 관련 질문만 답변할 수 있습니다"라고 답하세요.
         - 답변의 마지막에 해당 문서의 어떤 부분을 참조했는지 표시하세요.
         - "청약 관련 질문만 답변할 수 있습니다"를 답할 땐 참조 부분에 대한 답변은 넣지 마세요.'''),
+        ('assistant', formatted_fs_prompt),
         MessagesPlaceholder('chat_history'),
         ('human','{input}')
     ])
