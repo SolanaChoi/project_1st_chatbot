@@ -8,3 +8,4 @@ requirements.txt
 chat.py
 llm.py
 chatbot.code-workspace
+secret/
