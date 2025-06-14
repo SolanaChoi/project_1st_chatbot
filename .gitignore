@@ -4,7 +4,6 @@
 __pycache__/
 .venv/
 *.py[cod]
-requirements.txt
 chat.py
 llm.py
 chatbot.code-workspace
