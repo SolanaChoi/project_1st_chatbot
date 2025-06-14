@@ -2,7 +2,7 @@ import uuid
 import streamlit as st
 from llmGW import stream_answer
 
-st.set_page_config(page_title='전세사기피해 상담 챗봇', page_icon='📰')
+st.set_page_config(page_title='전세사기피해 상담 챗봇', page_icon='🎈')
 st.title('🎈청약 *QNA* 봇')
 
 print('\n=====start=====')

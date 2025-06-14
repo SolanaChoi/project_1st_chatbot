@@ -81,6 +81,7 @@ def build_conversational_chain():
     ).pick('answer')
 
     return wrapped_chain
+  
     
 # AI Message==================================================
 def stream_answer(user_message, session_id='default'):
