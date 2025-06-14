@@ -5,3 +5,5 @@ pymupdf
 langchain-openai
 langchain-community
 python-dotenv
+pinecone-client
+git+https://github.com/hwchase17/langchain-pinecone.git
