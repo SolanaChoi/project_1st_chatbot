@@ -54,7 +54,8 @@ def build_qa_prompt():
         ('system','''당신은 청약 관련 전문가입니다. [context]를 참고하여 사용자의 질문에 답변하세요. [context]: {context}
         - 주어진 문서를 바탕으로 사용자의 청약 관련 질문에 정확하고 '자세하게' 답변해주세요.
         - 문서에 없는 정보는 "청약 관련 질문만 답변할 수 있습니다"라고 답하세요.
-        - 답변의 마지막에 해당 문서의 어떤 부분을 참조했는지 표시하세요.'''),
+        - 답변의 마지막에 해당 문서의 어떤 부분을 참조했는지 표시하세요.
+        - "청약 관련 질문만 답변할 수 있습니다"를 답할 땐 참조 부분에 대한 답변은 넣지 마세요.'''),
         MessagesPlaceholder('chat_history'),
         ('human','{input}')
     ])
@@ -62,6 +63,8 @@ def build_qa_prompt():
 
 # 전체 chain 구성================================================
 def build_conversational_chain():
+    LANGCHAIN_API_KEY = os.getenv('LANGCHAIN_API_KEY')
+
     vectorDB = load_vectorstore()
     DBretriever = vectorDB.as_retriever(search_kwargs={"k":3})
 
@@ -81,8 +84,8 @@ def build_conversational_chain():
     ).pick('answer')
 
     return wrapped_chain
-  
-    
+
+
 # AI Message==================================================
 def stream_answer(user_message, session_id='default'):
     wrapped_chain = build_conversational_chain()
