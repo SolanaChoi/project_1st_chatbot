@@ -4,7 +4,4 @@
 __pycache__/
 .venv/
 *.py[cod]
-chat.py
-llm.py
-chatbot.code-workspace
 secret/
