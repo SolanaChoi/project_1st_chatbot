@@ -75,7 +75,7 @@ def build_few_shot_examples() -> str:
 
 # 딕셔너리 json파일 로드함수 생성=====================================
 def load_dict_file(path='keyword_dict.json'):
-    with open(path, 'a', encoding='UTF-8') as file:
+    with open(path, 'r', encoding='UTF-8') as file:
         return json.load(file)
 
 # 딕셔너리 파일 str 변환 함수 생성=====================================
