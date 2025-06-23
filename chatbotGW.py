@@ -2,7 +2,7 @@ import uuid
 import streamlit as st
 from llmGW import stream_answer
 
-st.set_page_config(page_title='청약Q&A 챗봇', page_icon='🎈', layout="wide")
+st.set_page_config(page_title='청약Q&A 챗봇', page_icon='🧞', layout="wide")
 
 # Custom CSS 스타일링
 st.markdown("""
@@ -76,7 +76,7 @@ st.markdown('<div class="main-container">', unsafe_allow_html=True)
 # 타이틀 섹션
 st.markdown("""
 <div class="title-container">
-    <h1 class="main-title">🎈 청약 QNA 봇</h1>
+    <h1 class="main-title">🧞청약지니🧞</h1>
     <div class="subtitle">
         이 챗봇은 국토교통부 공식문서인 ★ <b>2024 주택청약 FAQ.pdf</b> 파일을 기반으로 답변합니다.😄
     </div>
