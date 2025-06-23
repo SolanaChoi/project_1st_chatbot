@@ -105,7 +105,7 @@ def build_qa_prompt():
         ('assistant', formatted_fs_prompt),
         MessagesPlaceholder('chat_history'),
         ('human','{input}')
-    ]).partial(keyword_dict=dictText)
+    ]).partial(dictText=dictText)
     
     return qa_prompt
 
